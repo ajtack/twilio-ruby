@@ -16,10 +16,14 @@ $(function () {
   var syncDoc;
 
   //Get an access token for the current user, passing a device ID
-  //For browser-based apps, we'll always just use the
-  //value "browser"
+  //In browser-based apps, every tab is like its own unique device
+  //synchronizing state -- so we'll use a random UUID to identify
+  //this tab.
   $.getJSON('/token', {
-    device: 'browser'
+    device: 'browser-' + 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random()*16|0, v = c == 'x' ? r : (r&0x3|0x8);
+      return v.toString(16);
+    })
   }, function (tokenResponse) {
     //Initialize the Sync client
     accessManager = new Twilio.AccessManager(tokenResponse.token);
